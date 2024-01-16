@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +29,18 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
 # Application definition
+
+KEYCLOAK_CONFIG = {
+    'KEYCLOAK_SERVER_URL': 'http://localhost:8080/auth',
+    'KEYCLOAK_REALM': 'library-dev',
+    'KEYCLOAK_CLIENT_ID': 'library-auth',
+    'KEYCLOAK_CLIENT_SECRET_KEY': 'DgZhrz0er6DH5bsqdj4Lb9WGioHSVXHq',
+    'KEYCLOAK_CACHE_TTL': 60,
+    'LOCAL_DECODE': False
+}
+
 
 INSTALLED_APPS = [
     'booksApi',
@@ -38,9 +50,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_keycloak.apps.KeycloakAppConfig'
 ]
 
 MIDDLEWARE = [
+    'django_keycloak_auth.middleware.KeycloakMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_keycloak.middleware.BaseKeycloakMiddleware',
+    'keycloak_oidc.middleware.OIDCMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -50,12 +67,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+
+
+    'django_keycloak.auth.backends.KeycloakAuthorizationCodeBackend',
+]
+
+LOGIN_URL = 'keycloak_login'
+
 ROOT_URLCONF = 'libraryApi.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [[os.path.join(BASE_DIR, 'main_app', 'templates')],],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,8 +104,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'libraryadmin_db',
         'USER': 'postgres',
-        'PASSWORD': 'Abc@2001',
-        'HOST': 'localhost',  # Or your PostgreSQL server address
+        'PASSWORD': 'admin',
+        'HOST': '127.0.0.1',  # Or your PostgreSQL server address
         'PORT': '5432', 
     }
 }
@@ -120,8 +145,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'main_app', 'static'),
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

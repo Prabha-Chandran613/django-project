@@ -7,4 +7,7 @@ urlpatterns = [
     path('books/<int:pk>/', views.view_book),
     path('books/update/<int:pk>/', views.update_book),
     path('books/delete/<int:pk>/', views.delete_book),
+    path('', views.main_page, name='main_page'),
+    path('login/', views.login, name='login'),
+    path('callback/', views.callback, name='callback'),
 ]

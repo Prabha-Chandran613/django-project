@@ -1,0 +1,10 @@
+{
+    "realm": "library-dev",
+    "auth-server-url": "http://0.0.0.0:8080/auth",
+    "ssl-required": "external",
+    "resource": "library-auth",
+    "credentials": {
+        "secret": "DgZhrz0er6DH5bsqdj4Lb9WGioHSVXHq"
+    },
+    "confidential-port": 0
+}

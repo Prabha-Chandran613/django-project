@@ -19,5 +19,6 @@ from django.urls import path,  include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-      path('api/', include('booksApi.urls')),
+    path('api/', include('booksApi.urls')),
+    path(r'^keycloak/', include('django_keycloak.urls')),
 ]
